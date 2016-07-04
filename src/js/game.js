@@ -6,29 +6,30 @@ function preload() {
 	game.load.image('zebra', 'src/assets/img/zebra_card_front.png');
 };
 
-var CARD_WIDTH = 125,
-	CARD_HEIGHT = 200;
-var BOARD_ROWS = 2,
-	BOARD_COLS = 3;
-
 var cards;
 var selectedCard = null;
 
 var errors = 0,
 	success = 0;
 
-function create() {
-	game.stage.backgroundColor = '#F5F5DC';
-	game.input.mouse.capture = true;
+function spawn() {
 
-	/* SPAWN BOARD */
+	var CARD_WIDTH = 125,
+		CARD_HEIGHT = 200;
+	var BOARD_ROWS = 2,
+		BOARD_COLS = 3;
+	var MARGIN_LEFT = (game.width - (CARD_WIDTH * BOARD_COLS)) / 2,
+		MARGIN_TOP = (game.height - (CARD_HEIGHT * BOARD_ROWS)) / 2;
+
+	debugger;
+
 	var availableCards = game.cache.getKeys(Phaser.Cache.IMAGE);
 	cards = game.add.group();
 
 	for (var i = 0; i < BOARD_ROWS; i++) {
 		for (var j = 0; j < BOARD_COLS; j++) {
-			var pos_x = (CARD_WIDTH + 1) * j,
-				pos_y = (CARD_HEIGHT + 1) * i;
+			var pos_x = MARGIN_LEFT + (CARD_WIDTH + 1) * j,
+				pos_y = MARGIN_TOP + (CARD_HEIGHT + 1) * i;
 
 			var card = cards.create(pos_x, pos_y, availableCards[j]);
 			card.inputEnabled = true;
@@ -37,6 +38,13 @@ function create() {
 			card.boardPos = { x: i, y: j }; // Set card position in board.
 		}
 	}
+};
+
+function create() {
+	game.stage.backgroundColor = '#F5F5DC';
+	game.input.mouse.capture = true;
+
+	spawn();
 };
 
 function selectCard (card) {
