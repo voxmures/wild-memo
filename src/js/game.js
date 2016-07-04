@@ -12,6 +12,29 @@ var selectedCard = null;
 var errors = 0,
 	success = 0;
 
+
+/*
+ Shuffle function extracted from https://bost.ocks.org/mike/shuffle/ 
+ It implements the Fisher-Yates shuffle algorithm, O(n) performance
+*/
+function shuffle(array) {
+  var m = array.length, t, i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
+};
+
 function spawn() {
 
 	var CARD_WIDTH = 125,
@@ -21,21 +44,26 @@ function spawn() {
 	var MARGIN_LEFT = (game.width - (CARD_WIDTH * BOARD_COLS)) / 2,
 		MARGIN_TOP = (game.height - (CARD_HEIGHT * BOARD_ROWS)) / 2;
 
-	debugger;
-
+	// Prepare the array of available cards to play.
 	var availableCards = game.cache.getKeys(Phaser.Cache.IMAGE);
+	availableCards = availableCards.concat(availableCards);
+	availableCards = shuffle(availableCards);
+
 	cards = game.add.group();
 
+	var k = 0;
 	for (var i = 0; i < BOARD_ROWS; i++) {
 		for (var j = 0; j < BOARD_COLS; j++) {
 			var pos_x = MARGIN_LEFT + (CARD_WIDTH + 1) * j,
 				pos_y = MARGIN_TOP + (CARD_HEIGHT + 1) * i;
 
-			var card = cards.create(pos_x, pos_y, availableCards[j]);
+			var card = cards.create(pos_x, pos_y, availableCards[k]);
 			card.inputEnabled = true;
 			card.events.onInputDown.add(selectCard, this);
 
 			card.boardPos = { x: i, y: j }; // Set card position in board.
+
+			k++;
 		}
 	}
 };
