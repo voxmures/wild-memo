@@ -63,10 +63,18 @@ function spawn() {
 			faceDownCards.create(pos_x, pos_y, 'back');	// Creates the back of the card.
 			var card = cards.create(pos_x, pos_y, deck[k]);
 
-			card.inputEnabled = true;
-			card.events.onInputDown.add(selectCard, this);
-
 			card.boardPos = { x: i, y: j }; // Set card position in board.
+
+			// Draws the clickable area.
+			var g = game.add.graphics(0, 0);
+			//g.lineStyle(2, 0x0000FF, 0.5); // Colour the lines of the rectangle to debug purposes.
+			g.beginFill(0xFFFFFF, 0);
+			g.drawRect(pos_x, pos_y, CARD_WIDTH, CARD_HEIGHT);
+			g.endFill();
+
+			g.card = card; // Assigns the current card to the clickable area.
+			g.inputEnabled = true;
+			g.events.onInputDown.add(selectCard, this);
 
 			k++;
 		}
@@ -85,11 +93,14 @@ function create() {
 	}, this);
 };
 
-function selectCard (card) {
-	if (selectedCard == null)
+function selectCard (clickableArea) {
+	var card = clickableArea.card;
+	if (selectedCard == null) {
 		selectedCard = card;
-	else if (hasSamePosition(card))
+	}
+	else if (hasSamePosition(card)) {
 		selectedCard = null;
+	}
 	else if (checkMatch(card)) {
 		success++;
 		selectedCard = null;
