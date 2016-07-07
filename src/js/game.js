@@ -11,7 +11,8 @@ function preload() {
 };
 
 var cards, faceDownCards;
-var selectedCard = null;
+var selectedCard = null,
+	auxSelected = null;
 
 var errors = 0,
 	success = 0;
@@ -64,6 +65,7 @@ function spawn() {
 			var card = cards.create(pos_x, pos_y, deck[k]);
 
 			card.boardPos = { x: i, y: j }; // Set card position in board.
+			card.matched = false;
 
 			// Draws the clickable area.
 			var g = game.add.graphics(0, 0);
@@ -95,19 +97,29 @@ function create() {
 
 function selectCard (clickableArea) {
 	var card = clickableArea.card;
-	if (selectedCard == null) {
-		selectedCard = card;
-	}
-	else if (hasSamePosition(card)) {
-		selectedCard = null;
-	}
-	else if (checkMatch(card)) {
-		success++;
-		selectedCard = null;
-	}
-	else {
-		errors++;
-		selectedCard = null;
+	if (!card.matched) {
+		card.visible = true;
+		if (selectedCard == null) {
+			selectedCard = card;
+			selectedCard.visible = true;
+		}
+		else if (hasSamePosition(card)) {
+			selectedCard.visible = false;
+			selectedCard = null;
+		}
+		else if (checkMatch(card)) {
+			success++;
+			selectedCard.matched = card.matched = true;
+			selectedCard = null;
+		}
+		else {
+			errors++;
+			auxSelected = card;
+			game.time.events.add(Phaser.Timer.QUARTER, function() {
+				selectedCard.visible = auxSelected.visible = false;
+				selectedCard = auxSelected = null;
+			}, this);
+		}
 	}
 };
 
