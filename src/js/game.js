@@ -1,17 +1,20 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
+var availableCards = ['frog', 'fox', 'zebra'];
+
 function preload() {
 	game.load.image('frog', 'src/assets/img/frog_card_front.png');
 	game.load.image('fox', 'src/assets/img/fox_card_front.png');
 	game.load.image('zebra', 'src/assets/img/zebra_card_front.png');
+
+	game.load.image('back', 'src/assets/img/card_back.png');
 };
 
-var cards;
+var cards, faceDownCards;
 var selectedCard = null;
 
 var errors = 0,
 	success = 0;
-
 
 /*
  Shuffle function extracted from https://bost.ocks.org/mike/shuffle/ 
@@ -45,10 +48,10 @@ function spawn() {
 		MARGIN_TOP = (game.height - (CARD_HEIGHT * BOARD_ROWS)) / 2;
 
 	// Prepare the array of available cards to play.
-	var availableCards = game.cache.getKeys(Phaser.Cache.IMAGE);
-	availableCards = availableCards.concat(availableCards);
-	availableCards = shuffle(availableCards);
+	deck = availableCards.concat(availableCards);
+	deck = shuffle(deck);
 
+	faceDownCards = game.add.group(); // Layer of face down cards.
 	cards = game.add.group();
 
 	var k = 0;
@@ -57,7 +60,9 @@ function spawn() {
 			var pos_x = MARGIN_LEFT + (CARD_WIDTH + 1) * j,
 				pos_y = MARGIN_TOP + (CARD_HEIGHT + 1) * i;
 
-			var card = cards.create(pos_x, pos_y, availableCards[k]);
+			faceDownCards.create(pos_x, pos_y, 'back');	// Creates the back of the card.
+			var card = cards.create(pos_x, pos_y, deck[k]);
+
 			card.inputEnabled = true;
 			card.events.onInputDown.add(selectCard, this);
 
@@ -73,6 +78,11 @@ function create() {
 	game.input.mouse.capture = true;
 
 	spawn();
+
+	// Set timer to reverse the cards.
+	game.time.events.add(Phaser.Timer.SECOND * 3, function() { 
+		cards.setAll('visible', false) 
+	}, this);
 };
 
 function selectCard (card) {
