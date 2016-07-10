@@ -1,11 +1,12 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var availableCards = ['frog', 'fox', 'zebra'];
+var availableCards = ['frog', 'fox', 'zebra', 'shark'];
 
 function preload() {
 	game.load.image('frog', 'src/assets/img/frog_card_front.png');
 	game.load.image('fox', 'src/assets/img/fox_card_front.png');
 	game.load.image('zebra', 'src/assets/img/zebra_card_front.png');
+	game.load.image('shark', 'src/assets/img/shark_card_front.png');
 
 	game.load.image('back', 'src/assets/img/card_back.png');
 };
@@ -44,7 +45,7 @@ function spawn() {
 	var CARD_WIDTH = 125,
 		CARD_HEIGHT = 200;
 	var BOARD_ROWS = 2,
-		BOARD_COLS = 3;
+		BOARD_COLS = 4;
 	var MARGIN_LEFT = (game.width - (CARD_WIDTH * BOARD_COLS)) / 2,
 		MARGIN_TOP = (game.height - (CARD_HEIGHT * BOARD_ROWS)) / 2;
 
