@@ -2,11 +2,12 @@ class Card extends Phaser.Sprite {
 	
 	constructor(game, x, y, key, id, cb_onInputDown) {
 		super(game, x, y, key);
+		this.angle += (Math.round(Math.random()) * 2 - 1) * Math.floor(Math.random() * 2 + 1);
 
 		this._frontKey = key;
 		this._id = id;
 
-		this._isMatch = false;
+		this._isFlip = false;
 
 		//this.inputEnabled = true;
 		this.events.onInputDown.add(cb_onInputDown, this);
@@ -14,6 +15,7 @@ class Card extends Phaser.Sprite {
 
 	flip() {
 		if (this.key === 'back') {
+			this._isFlip = true;
 			this.loadTexture(this._frontKey, 0, false);
 		}
 		else {
@@ -25,7 +27,7 @@ class Card extends Phaser.Sprite {
 
 	get frontKey() { return this._frontKey; }
 
-	get isMatch() {	return this._matched; }
+	get isFlip() {	return this._isFlip; }
 	
 }
 
