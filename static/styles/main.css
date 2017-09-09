@@ -12,4 +12,25 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #785a35;
+}
+
+.header {
+  display: block;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-image: url("/assets/img/header.png");
+  background-repeat: repeat-x;
+  height: 100px;
+}
+
+.header .logo {
+  display: block;
+  margin: 0 auto;
+  margin-top: -16px;
+}
+
+#content {
+  margin-top: 50px;
 }
